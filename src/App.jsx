@@ -31,12 +31,16 @@ const App = () => {
 
   // Function for calling API
   // Use Async function for the 'await' keyword: suspends function's execution until the Promise settles: either resolves with a value or rejects with an error
-  const fetchMovies = async () => {
+  const fetchMovies = async (query = '') => {
     setIsLoading(true);
     setErrorMessage('');
     try {
-      // Set the endpoint (the api url you are trying to recieve info from)
-      const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
+      
+      // Conditionally call search API, else call the discover API 
+      const endpoint = (query 
+        ? `${API_BASE_URL}/search/movie?query=${encodeURI(query)}` // optimize so that query is in UTF-8 encoding, making it so query is processed properly despite weird characters 
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc` 
+      );
 
       // Call the api. The Response object now holds the .json file with all the data
       const myResponse = await fetch(endpoint, API_OPTIONS)
@@ -72,9 +76,9 @@ const App = () => {
 
   // We only want this to load once at the beginning of the program
   useEffect(()=> {
-    fetchMovies();
-  }, []);
-  // The empty array above is an empty dependency array which says that the effect will only activate if the values in the dependency array change
+    fetchMovies(searchTerm);
+  }, [searchTerm]);
+  // The array above is a dependency array which says that the effect will only activate if the values in the dependency array change
 
   return (
     <main>
