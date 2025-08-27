@@ -20,13 +20,18 @@ const API_OPTIONS = {
 const App = () => { 
   // Create a search state within the main application and pass the state fields as props to the Search component, for the sake of global scope
   const [searchTerm, setSearchTerm] = useState('');
-
   // To display the error of a program on the screen
   const [errorMessage, setErrorMessage] = useState('');
+  // To keep track of the webpage's current movieList
+  const [movieList,setMovieList] = useState([]);
+  // The isLoading variable toggles between true and false, and so that "state" needs to be remembered throughout renders
+  const [isLoading, setIsLoading] = useState(false);
 
   // Function for calling API
   // Use Async function for the 'await' keyword: suspends function's execution until the Promise settles: either resolves with a value or rejects with an error
   const fetchMovies = async () => {
+    setIsLoading(true);
+    setErrorMessage('');
     try {
       // Set the endpoint (the api url you are trying to recieve info from)
       const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
@@ -45,7 +50,12 @@ const App = () => {
       // Error handles if the API call returned properly
       if(movieData.Response==='False'){
         setErrorMessage(movieData.Error || 'Failed to fetch movies'); 
+        setMovieList([]);
+        return;
       }
+
+      // Once Errors are handled and we have proper movieData
+      setMovieList(movieData.results || []);
 
       // Test to see if API is returning proper data
       console.log(movieData);
@@ -53,13 +63,12 @@ const App = () => {
     } catch (error){ // Error handling for a faulty API call
       console.error(`Error fetching movies: ${error}`);
       setErrorMessage('Error fetching movies. Please try again later baka');
+    } finally{
+      setIsLoading(false);
     }
   }
 
-
-
   // We only want this to load once at the beginning of the program
-  //
   useEffect(()=> {
     fetchMovies();
   }, []);
