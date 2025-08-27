@@ -93,10 +93,26 @@ const App = () => {
 
           <h2>All Movies </h2>
 
+          {/* Conditional rendering for display: nested ternary operators */}
 
-          {/* Conditional rendering of errorMessage */}
+          {isLoading ? (
+              <p className="text-white">Loading...</p>
+            ) : errorMessage ? (
+              <p className="text-red-500">{errorMessage}</p>
+            ) : (
+              <ul>
+                {movieList.map((movie) => (
+                  // Always important to assign a unique ID to each element of a mapped list
+                  <p key ={movie.id} className="text-white">{movie.title}</p>
+                ))}
+              </ul>
+            )
+          } 
+          
 
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+
+
+            
 
         </section>
         
