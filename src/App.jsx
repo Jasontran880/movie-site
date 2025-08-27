@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react'
 import Search from './components/Search.jsx'
 import Spinner from './components/Spinner.jsx'
+import MovieCard from './components/MovieCard.jsx'
 
 // Handling Movie Database API  
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -104,7 +105,10 @@ const App = () => {
               <ul>
                 {movieList.map((movie) => (
                   // Always important to assign a unique ID to each element of a mapped list
-                  <p key ={movie.id} className="text-white">{movie.title}</p>
+                  // Display movies
+                  // give this component a key and passs the movie prop
+                  <MovieCard key={movie.id} movie = {movie}/>
+
                 ))}
               </ul>
             )
