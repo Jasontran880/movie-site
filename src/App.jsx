@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react'
 import Search from './components/Search.jsx'
+import Spinner from './components/Spinner.jsx'
 
 // Handling Movie Database API  
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -91,12 +92,12 @@ const App = () => {
 
         <section className="all-movies">
 
-          <h2>All Movies </h2>
+          <h2 className="mt-[40px]">All Movies </h2 >
 
           {/* Conditional rendering for display: nested ternary operators */}
 
           {isLoading ? (
-              <p className="text-white">Loading...</p>
+              <Spinner /> 
             ) : errorMessage ? (
               <p className="text-red-500">{errorMessage}</p>
             ) : (
