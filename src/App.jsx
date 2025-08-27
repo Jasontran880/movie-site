@@ -4,7 +4,7 @@ import Search from './components/Search.jsx'
 
 // Handling Movie Database API  
 const API_BASE_URL = 'https://api.themoviedb.org/3';
-// reference to the private API Key for API requests
+// Reference to the private API Key for API requests
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 const API_OPTIONS = {
@@ -21,19 +21,36 @@ const App = () => {
   // Create a search state within the main application and pass the state fields as props to the Search component, for the sake of global scope
   const [searchTerm, setSearchTerm] = useState('');
 
-  // to display the error of a program on the screen
+  // To display the error of a program on the screen
   const [errorMessage, setErrorMessage] = useState('');
 
   // Function for calling API
   // Use Async function for the 'await' keyword: suspends function's execution until the Promise settles: either resolves with a value or rejects with an error
   const fetchMovies = async () => {
     try {
-      // set the endpoint (the api url you are trying to recieve info from)
+      // Set the endpoint (the api url you are trying to recieve info from)
       const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
 
-      // call the api
-      const response = await fetch(endpoint, API_OPTIONS)
-    } catch (error){
+      // Call the api. The Response object now holds the .json file with all the data
+      const myResponse = await fetch(endpoint, API_OPTIONS)
+
+      // Error handles if the internet request was okay
+      if (!myResponse.ok) {
+        throw new Error('Failed to fetch movies');
+      }
+
+      // Get the json file in a variable
+      const movieData = await myResponse.json();
+
+      // Error handles if the API call returned properly
+      if(movieData.Response==='False'){
+        setErrorMessage(movieData.Error || 'Failed to fetch movies'); 
+      }
+
+      // Test to see if API is returning proper data
+      console.log(movieData);
+
+    } catch (error){ // Error handling for a faulty API call
       console.error(`Error fetching movies: ${error}`);
       setErrorMessage('Error fetching movies. Please try again later baka');
     }
@@ -44,9 +61,9 @@ const App = () => {
   // We only want this to load once at the beginning of the program
   //
   useEffect(()=> {
-
-  }, [])
-  // the empty array above is an empty dependency array which says that the effect will only activate if the values in the dependency array change
+    fetchMovies();
+  }, []);
+  // The empty array above is an empty dependency array which says that the effect will only activate if the values in the dependency array change
 
   return (
     <main>
